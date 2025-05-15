@@ -19,7 +19,7 @@ export const mockArtists: Artist[] = [
     deathDate: new Date('1926-12-05'),
     biography: 'Claude Monet was a pioneering artist whose innovative techniques and dedication to capturing the essence of nature made him one of the most significant figures in art history. His mastery of color, light, and brushwork, particularly evident in his impressionist works, continues to inspire artists and captivate audiences worldwide. Monet\'\s legacy as a visionary painter endures, leaving an indelible mark on the world of art and culture.',
     rank: 'The Legend',
-    Paintings: [mockPaintings[0],mockPaintings[1],mockPaintings[2]]
+    Paintings: [1,2,3]
   },
   {
     id: 2,

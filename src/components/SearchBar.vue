@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref , watch } from 'vue';
 const searchQuery = ref();
 
 const props = defineProps<{
@@ -9,6 +9,15 @@ const props = defineProps<{
 const styleBar = computed(() => {
   return props.type === 'white' ? 'whiteSearchBar' : 'darkSearchBar' ;
 } )
+
+const emit = defineEmits<{
+  (e: 'query', searchQuery: string): void;
+}>();
+
+watch(searchQuery, (newValue) => {
+  emit('query', newValue);
+  console.log(searchQuery.value)
+});
 </script>
 <template>
   <div class="search-container">
@@ -45,6 +54,10 @@ const styleBar = computed(() => {
 .darkSearchBar {
   border: 2px solid var(--primary);
   background-color: var(--p6);
+}
+
+input, select, textarea{
+    color: white ;
 }
 
 input::placeholder {

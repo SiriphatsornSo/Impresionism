@@ -30,9 +30,16 @@ const router = createRouter({
       component: () => import('../view/Artist.vue'),
     },
     {
-      path: '/artists/:id',
-      name: 'artist',
-      component: () => import('../view/Artist.vue'),
+      path: '/painting/:id',
+      name: 'painting',
+      component: () => import('../view/Painting.vue'),
+    },
+    {
+      path: '/profile/:id',
+      name: 'profile',
+      component: () => import('../view/Profile.vue'),
+      meta : {
+        backTo: "home"}
     }
   ],
 })

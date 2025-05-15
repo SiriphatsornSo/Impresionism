@@ -8,7 +8,7 @@ import user3Profile from '@/assets/img/userProfile/user3.jpg'
 
 export const mockUsers: User[] = [
   {
-    id: 1,
+    id: 7,
     profileSrc: user1Profile ,
     name: 'Olivia Lee',
     tel: '0812345678',
@@ -25,7 +25,7 @@ export const mockUsers: User[] = [
     Paintings: []
   },
   {
-    id: 2,
+    id: 8,
     profileSrc: user2Profile ,
     name: 'Suda Inthanon',
     tel: '0898765432',
@@ -42,7 +42,7 @@ export const mockUsers: User[] = [
    Paintings: []
   },
   {
-    id: 3,
+    id: 9,
     profileSrc: user3Profile,
     name: 'Wirote Chaiyasit',
     tel: '0823456789',

@@ -1,36 +1,43 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { mockArtists } from '@/data/artists';
-import type { Artist } from '@/types/artist'
-import PaintingCard from '@/components/PaintingCard.vue';
+import { mockPaintings } from '@/data/painting';
+import { mockUsers } from '@/data/users';
+import type { Painting } from '@/types/painting';
 
-const mockArtist = mockArtists
+const artists = [...mockArtists, ...mockUsers]
 const route = useRoute()
 const artistId = Number(route.params.id)
 
-const artist = mockArtist.find((a) => a.id === artistId )
-console.log(artist)
-console.log(artistId)
+const artist = artists.find((a) => a.id === artistId)
+const paintings = mockPaintings.filter(p => artist.Paintings.includes(p.id))
+
+const props = defineProps<{
+  frompage : 'hall' | 'painting'
+  paintingId? : number
+}>()
 
 </script>
 <template>
 
   <div class="artistpic-relative">
-    <img :src="artist.profileSrc" />
-    <TopNav class="topnav" :style="'white'" />
-    <div class="descript-background-absolute">
-    </div>
+    <img :src="artist?.profileSrc" />
+    <TopNav :page="props.frompage" class="topnav" :style="'white'" />
+    <div class="descript-background-absolute"></div>
     <div class="artist-description">
-      <h1 id="name-artist">{{ artist.name }}</h1>
-      <p id="year">{{ artist.birthDate.getFullYear() }}</p>
+      <h1 id="name-artist">{{ artist?.name }}</h1>
+      <p id="year">{{ artist?.birthDate.getFullYear() }}</p>
       <div id="biography"> {{ artist?.biography }}</div>
     </div>
   </div>
 
   <div id="album">Famous Artwork Album</div>
 
-  <div id="painting-container">
-    <PaintingCard/>
+  <div class="album-container">
+    <RouterLink class="painting-card" v-for="painting in paintings" :key="painting.id"
+      :to="{ name: 'painting', params: { id: painting.id } }">
+      <PaintingCard :painting="painting" :key="painting.id" :data="painting" />
+    </RouterLink>
   </div>
 
 </template>
@@ -43,14 +50,14 @@ console.log(artistId)
   border-radius: 0px;
   position: relative;
   z-index: 1;
-  margin-bottom: 30px ;
+  margin-bottom: 30px;
 }
 
 .artistpic-relative>img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 50% 50%;
+  object-position: 50% 30%;
   border-bottom-right-radius: 32px;
   border-bottom-left-radius: 32px;
 
@@ -58,7 +65,7 @@ console.log(artistId)
 
 .descript-background-absolute {
   width: 100%;
-  height: 35%;
+  height: 30%;
   z-index: 2;
   position: absolute;
   bottom: 0px;
@@ -70,8 +77,10 @@ console.log(artistId)
 .artist-description {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: left;
   width: 100%;
-  height: 35%;
+  height: 30%;
   z-index: 2;
   position: absolute;
   bottom: 0px;
@@ -111,9 +120,50 @@ console.log(artistId)
 }
 
 #album {
-padding-left: 5%;
-font-size: 16px;
-font-weight: bold;
-color : var(--primary);
+  padding-left: 5%;
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--primary);
+}
+
+.album-container {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 0px;
+  margin-top: 30px;
+  padding: 0px 5%;
+}
+
+.painting-card {
+  width: 50%;
+  display: inline-block;
+  text-align: center;
+}
+
+@media (min-width : 768px) {
+  .descript-background-absolute {
+    height: 25%;
+  }
+
+  .artist-description {
+    height: 25%;
+  }
+
+  .album-container {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 0px;
+  margin-top: 30px;
+  padding: 0px 5%;
+}
+
+.painting-card {
+  width: 32%;
+}
+
 }
 </style>

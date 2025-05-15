@@ -8,11 +8,10 @@ const props = defineProps<{
 }>()
 
 const buttonClass = computed(() => {
-  console.log(props.style)
   switch (props.style) {
-    case 'white': console.log('white'); return 'btn-white'
-    case 'dark': console.log('dark'); return 'btn-dark'
-    default: return console.log('light'); 'btn-light'
+    case 'white':  return 'btn-white'
+    case 'dark':  return 'btn-dark'
+    default: return  'btn-light'
   }
 
 })
@@ -44,6 +43,10 @@ const iconName = computed(() => {
     border-radius: 50%;
     border: 0;
   }
+  .bnt-icon {
+    font-size : 20px;
+    color: white ;
+  }
 
   @media (min-width: 768px) {
   button {
@@ -66,4 +69,9 @@ const iconName = computed(() => {
 
   .btn-light {
     background-color: var(--primary);
-  }</style>
+  }
+
+  .btn-white .bnt-icon {
+    color : var(--primary)
+  }
+  </style>

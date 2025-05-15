@@ -8,5 +8,5 @@ export interface Artist {
   deathDate: Date
   biography : string
   rank: 'The Legend'
-  Paintings :Painting[]
+  Paintings :Number[]
 }

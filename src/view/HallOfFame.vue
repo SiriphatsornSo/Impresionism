@@ -2,27 +2,38 @@
 // import { mockArtists } from '@/data/artists';
 import { mockUsers } from '@/data/users'
 import { mockArtists } from '@/data/artists';
+import { mockPaintings } from '@/data/painting';
+import { ref } from 'vue';
+import Painting from './Painting.vue';
+const mockPainting = mockPaintings
 const mockArtist = mockArtists
 const mockUser = mockUsers
-
 const artists = [...mockArtists, ...mockUsers]
+const artistsSearch = ref([])
 
+const handleSearch = (q : string) => {
+  const artistsFilter = artists.filter(artist => artist.name.toLowerCase().includes(q.toLowerCase()))
+  const paintingFilter = mockPainting.filter(painting => painting.name.toLowerCase().includes(q.toLowerCase()))
+  console.log(artistsFilter)
+  console.log(paintingFilter)
+  artistsSearch.value = artistsFilter
+}
 </script>
 <template>
   <NavBar />
   <div id="halloffame-bg">
     <TopNav :style="'white'" />
     <h1 class="hall-of-fame">Hall of Fame</h1>
-    <SearchBar style="margin-bottom: 20px;" type='dark' />
-    <div class="artist-container">
-      <!-- <ArtistCard v-for="artist in artists" :artist="artist" :key="artist.id" :data="artist" /> -->
-
-      <RouterLink class="artist-card" v-for="artist in artists" :key="artist.id" :to="{name:'artist' , params:{id: artist.id}}">
+    <SearchBar @query="handleSearch" style="margin-bottom: 20px;" type='dark' />
+    <div v-if="artistsSearch.length !== 0" class="artist-container">
+      <RouterLink class="artist-card" v-for="artist in artistsSearch" :key="artist.id" :to="{name:'artist' , params:{id: artist.id }}">
         <ArtistCard :artist="artist" :key="artist.id" :data="artist" />
       </RouterLink>
-
-      <!-- { name: 'movie', params: { id: item.id } } -->
-
+    </div>
+    <div v-else class="artist-container">
+       <RouterLink class="artist-card" v-for="artist in artists" :key="artist.id" :to="{name:'artist' , params:{id: artist.id }}">
+        <ArtistCard :artist="artist" :key="artist.id" :data="artist" />
+      </RouterLink>
     </div>
 
 
@@ -33,7 +44,7 @@ const artists = [...mockArtists, ...mockUsers]
 <style scope>
 #halloffame-bg {
   background-color: var(--p5);
-  max-height: auto;
+  height: 100%;
   padding-bottom: 50px;
 }
 
@@ -49,8 +60,8 @@ const artists = [...mockArtists, ...mockUsers]
 .artist-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
-  justify-content: space-evenly;
+  gap:auto ;
+  justify-content: flex-start;
 }
 .artist-card {
   width: 100%;
