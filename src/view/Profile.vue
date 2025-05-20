@@ -7,7 +7,7 @@ import 'animate.css';
 
 const route = useRoute()
 const userId = Number(route.params.id)
-const user = mockUsers.find((a) => a.id === userId)
+const usertest = mockUsers.find((a) => a.id === 7)
 
 const today = new Date().toISOString().split('T')[0]
 const name = ref('')
@@ -23,6 +23,16 @@ const subdistricts = ref([])
 const subdistrict = ref('')
 const zipCode = ref(null)
 const openModal = ref(false)
+const formRef = ref<HTMLFormElement | null>(null)
+const user = ref({
+  id: null,
+  first_name: '',
+  last_name: '',
+  email: '',
+  avatar: ''
+});
+const nametest = ref('')
+const jobtest = ref('')
 
 const editProfileDetail = {
   newName: name,
@@ -44,8 +54,54 @@ const fetchdata = async () => {
   })
 
 }
+
+const fetchUserData = async () => {
+  await axios.get(`https://reqres.in/api/users/${userId}`, {
+    headers: {
+      'x-api-key': 'reqres-free-v1'
+    }
+  }).then((response) => {
+    console.log('Success:', response.data);
+    user.value = response.data.data;
+    console.log(user.value.id)
+  }).catch(error => {
+    console.error('Error:', error);
+  });
+}
+
+const putUserData = async () => {
+  await axios.put(`https://reqres.in/api/users/${userId}`, {
+    "name": nametest.value,
+    // "job": jobtest.value
+  }, {
+    headers: {
+      'x-api-key': 'reqres-free-v1'
+    }
+  }).then(response => {
+    console.log('Success Put:', response.data);
+  }).catch(error => {
+    console.error('Error:', error);
+  });
+}
+
+const patchUserData = async () => {
+  await axios.patch(`https://reqres.in/api/users/${userId}`, {
+    "name": nametest.value,
+    "job": jobtest.value
+  }, {
+    headers: {
+      'x-api-key': 'reqres-free-v1'
+    }
+  }).then(response => {
+    console.log('Success Patch:', response.data);
+  }).catch(error => {
+    console.error('Error:', error);
+  });
+}
+
 onMounted(async () => {
   fetchdata()
+  fetchUserData()
 })
 
 watch(province, async (newProvince, oldProvince) => {
@@ -69,81 +125,121 @@ const editProfile = () => {
   openModal.value = true
 }
 const confirmHandler = () => {
- openModal.value = false
- console.log('confirm')
+  openModal.value = false
+  console.log('confirm')
+}
+
+const submitForm = () => {
+  if (formRef.value?.checkValidity()) {
+    openModal.value = true
+  } else {
+    formRef.value?.reportValidity()
+  }
+}
+
+const formatPhone = (event: Event) => {
+  let rawValue = (event.target as HTMLInputElement).value
+  rawValue = rawValue.replace(/\D/g, '')
+  rawValue = rawValue.slice(0, 10)
+
+  let formatted = rawValue
+  if (rawValue.length > 3 && rawValue.length <= 6) {
+    formatted = `${rawValue.slice(0, 3)}-${rawValue.slice(3)}`
+  } else if (rawValue.length > 6) {
+    formatted = `${rawValue.slice(0, 3)}-${rawValue.slice(3, 6)}-${rawValue.slice(6)}`
+  }
+
+  tel.value = formatted
 }
 
 </script>
 <template>
-  <div class="profile-relative">
-    <img :src="user?.profileSrc" />
-    <TopNav class="topnav" :page="'profile'" :style="'white'" />
-  </div>
-  <div class="profile-container">
-    <div class="profile-detail-container">
-      <div id="userName">{{ user?.name }}</div>
-      <div id="userRank">{{ user?.rank }}</div>
-      <div id="userBio">{{ user?.biography }}</div>
+  <div class="container">
+    <div class="profile-relative">
+      <img :src="user.avatar" />
+      <TopNav class="topnav" :page="'profile'" :style="'white'" />
     </div>
+    <div class="profile-container">
+      <div class="profile-detail-container">
+        <div id="userName">{{ user.first_name }} {{ user.last_name }}</div>
+        <div id="userRank">{{ usertest.rank }}</div>
+        <div id="userBio">{{ user.email }}</div>
+      </div>
 
-    <div class="edit-profile">
-      <div id="edit-profile-text">Edit Profile</div>
-      <form class="form-edit" @submit.prevent>
-        <label> name</label>
-        <input v-model="name" />
-        <label>tel</label>
-        <input type="tel" pattern="[0-9]{10}" v-model="tel" />
-        <label>email</label>
-        <input type="email" id="email" size="30" v-model="email" />
-        <label>birth date</label>
-        <input type="date" v-model="birthDate" />
-        <label>gender</label>
-        <div class="radio-container">
-          <label class="radio-input-label"><input class="radio-input" type="radio" v-model="gender" value="male" />
-            male</label>
-          <label class="radio-input-label"><input class="radio-input" type="radio" v-model="gender" value="female" />
-            female</label>
-          <label class="radio-input-label"><input class="radio-input" type="radio" v-model="gender" value="other" />
-            other</label>
-        </div>
-        <label>Province</label>
-        <select v-model="province">
-          <option v-for="p in provinces" :key="p.id" :value="p" @change="">{{ p.name_th }}</option>
-        </select>
-        <label>Distirct</label>
-        <select v-model="district">
-          <option v-for="d in districts" :key="d.id" :value="d">{{ d.name_th }}</option>
-        </select>
-        <label >Subdistirct</label>
-        <select v-model="subdistrict">
-          <option v-for="s in subdistricts" :key="s.id" :value="s">{{ s.name_th }}</option>
-        </select>
-        <label>Zip Code : {{ zipCode }}</label>
-        <ButtonDefault @click="openModal = !openModal" class="btn-edit" :title="'save'" :type="'submit'" />
-      </form>
+      <div class="test update">
+        <label>Name</label>
+        <input v-model="nametest" />
+        <label>Job</label>
+        <input v-model="jobtest" />
+        <ButtonDefault style="width: 80%; height: auto; padding: 20px; margin: 5px ;" @click="putUserData"
+          :title="'Put UserData'" />
+        <ButtonDefault style="width: 80%; height: auto; padding: 20px ; margin: 5px;" @click="patchUserData"
+          :title="'Patch UserData'" />
+      </div>
+
+
+
+      <div class="edit-profile">
+        <div id="edit-profile-text">Edit Profile</div>
+        <form class="form-edit" @submit.prevent="submitForm" ref="formRef">
+          <label>Name*</label>
+          <input v-model="name" required />
+          <label>Tel.*</label>
+          <input type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" v-model="tel" inputmode="numeric" maxlength="12"
+            @input="formatPhone" required />
+          <label>Email*</label>
+          <input type="email" id="email" size="30" v-model="email" required />
+          <label>Birth Date*</label>
+          <input type="date" v-model="birthDate" required />
+          <label>Gender*</label>
+          <div class="radio-container">
+            <label class="radio-input-label"><input class="radio-input" type="radio" v-model="gender" value="male"
+                required />
+              Male</label>
+            <label class="radio-input-label"><input class="radio-input" type="radio" v-model="gender" value="female" />
+              Female</label>
+            <label class="radio-input-label"><input class="radio-input" type="radio" v-model="gender" value="other" />
+              Other</label>
+          </div>
+          <label>Province*</label>
+          <select v-model="province" required>
+            <option value="" disabled>Select province</option>
+            <option v-for="p in provinces" :key="p.id" :value="p" @change="">{{ p.name_th }}</option>
+          </select>
+          <label>Distirct*</label>
+          <select v-model="district" required>
+            <option value="" disabled>Select district</option>
+            <option v-for="d in districts" :key="d.id" :value="d">{{ d.name_th }}</option>
+          </select>
+          <label>Subdistirct*</label>
+
+          <select v-model="subdistrict" required>
+            <option value="" disabled>Select subdistrict</option>
+            <option v-for="s in subdistricts" :key="s.id" :value="s">{{ s.name_th }}</option>
+          </select>
+          <label>Zip Code : {{ zipCode }}</label>
+          <ButtonDefault class="btn-edit" :title="'save'" :type="'submit'" />
+        </form>
+      </div>
     </div>
-  </div>
-  <div v-if="openModal === true">
-    <EditProfileModal @cancel="openModal = !openModal" @confirm="confirmHandler":editDetail="editProfileDetail" />
+    <div v-if="openModal === true">
+      <EditProfileModal @cancel="openModal = !openModal" @confirm="confirmHandler" :editDetail="editProfileDetail" />
+    </div>
   </div>
 
 </template>
 <style scope>
+.container {
+  position : relative ;
+}
 .profile-relative {
   width: auto;
   height: 450px;
   overflow: hidden;
   border-radius: 0px;
-  position: relative;
-  z-index: 1;
+  /* position: relative; */
+  /* z-index: 1; */
   margin-bottom: 0px;
-}
-
-.topnav {
-  width: 100%;
-  position: absolute;
-  top: 0px;
-  z-index: 2;
 }
 
 .profile-relative>img {
@@ -153,19 +249,28 @@ const confirmHandler = () => {
   object-position: top;
 }
 
+.topnav {
+  width: 100%;
+  position: fixed;
+  top: 0px;
+  z-index: 10;
+}
+
 .profile-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
-  position: absolute;
   background-color: white;
   top: 400px;
   margin-top: 0px;
   z-index: 3;
-  border-radius: 30px;
+  border-top-left-radius: 30px;
+  border-top-right-radius: 30px;
   height: 500px;
   max-width: 900px;
+  margin-top: -50px;
+  position : absolute ;
 }
 
 .profile-detail-container {
@@ -174,6 +279,7 @@ const confirmHandler = () => {
   flex-direction: column;
   justify-content: center;
   align-content: center;
+  height: 300px;
 }
 
 .profile-detail-container>div {
@@ -203,6 +309,7 @@ const confirmHandler = () => {
 
   padding: 10px 30px;
   width: 100%;
+
 }
 
 .form-edit {

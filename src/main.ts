@@ -4,8 +4,6 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 
-
-
 //component
 import ButtonCircle from '@/components/buttons/ButtonCircle.vue'
 import ButtonDefault from '@/components/buttons/ButtonDefault.vue'
@@ -17,12 +15,14 @@ import ArtistCard from '@/components/hallOfFame/ArtistCard.vue'
 import PaintingCard from '@/components/PaintingCard.vue'
 import TimelineCard from './components/history/timelineCard.vue'
 import EditProfileModal from '@/components/modals/editProfileModal.vue'
+import TinyArtistCard from './components/home/TinyArtistCard.vue'
+import SwiperPainting from './components/home/swiperPainting.vue'
 
 // FontAwesome Setup
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { faHouse, faList , faStar , faImage , faSearch ,faGear , faArrowLeft ,faArrowRight } from '@fortawesome/free-solid-svg-icons'
-library.add(faHouse, faList , faStar , faImage , faSearch ,faGear , faArrowLeft ,faArrowRight)
+import { faHouse, faList , faStar , faImage , faSearch ,faGear , faArrowLeft ,faArrowRight,faPlus, faUser } from '@fortawesome/free-solid-svg-icons'
+library.add(faHouse, faList , faStar , faImage , faSearch ,faGear , faArrowLeft ,faArrowRight ,faPlus,faUser)
 
 const app = createApp(App)
 
@@ -38,10 +38,8 @@ app.component('ArtistCard',ArtistCard)
 app.component('PaintingCard',PaintingCard)
 app.component('TimelineCard',TimelineCard)
 app.component('EditProfileModal',EditProfileModal)
+app.component('TinyArtistCard',TinyArtistCard)
+app.component('SwiperPainting',SwiperPainting)
 
 app.use(router)
 app.mount('#app')
-
-
-
-

@@ -10,7 +10,7 @@ const props = defineProps<{
 <style scoped>
 button {
   background-color: var(--primary);
-  height: 40px;
+  height: 60px;
   border: none ;
   border-radius: 12px ;
   color : white ;

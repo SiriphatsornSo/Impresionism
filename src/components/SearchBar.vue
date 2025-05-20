@@ -23,7 +23,6 @@ watch(searchQuery, (newValue) => {
   <div class="search-container">
     <input :class="['searchbar',styleBar]" type="text" v-model="searchQuery" placeholder="Search .." />
   </div>
-
 </template>
 <style scope>
 
@@ -56,8 +55,12 @@ watch(searchQuery, (newValue) => {
   background-color: var(--p6);
 }
 
-input, select, textarea{
+.darkSearchBar, input, select, textarea{
     color: white ;
+}
+
+.whiteSearchBar,input, select, textarea{
+    color: var(--primary) ;
 }
 
 input::placeholder {

@@ -7,7 +7,6 @@ const mockTimelineData = {
   start : 1000,
   end : 2000,
 }
-console.log(mockTimelineData)
 
 </script>
 <template>

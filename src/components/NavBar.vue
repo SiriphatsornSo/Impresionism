@@ -26,7 +26,6 @@ import { RouterLink, RouterView } from 'vue-router'
       </RouterLink>
     </li>
   </ul>
-
 </template>
 
 <style scope>
@@ -57,7 +56,7 @@ import { RouterLink, RouterView } from 'vue-router'
   overflow: hidden;
   width: 90%;
   max-height: 60px;
-  z-index: 1000;
+  z-index: 4;
 }
 
 .Nav-item {

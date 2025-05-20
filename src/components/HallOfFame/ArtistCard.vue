@@ -18,7 +18,7 @@ console.log(props)
 </script>
 <template>
   <div class="cardrelative">
-    <img :src="props.artist.profileSrc" />
+    <img loading="lazy" :src="props.artist.profileSrc" />
     <div class="overlay"></div>
 
     <div class="cardabsolute">

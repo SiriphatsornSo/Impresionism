@@ -2,7 +2,7 @@
 import { computed, defineProps } from 'vue';
 
 const props = defineProps<{
-  type: 'leftArrow' | 'rightArrow' | 'search' | 'profile'
+  type: 'leftArrow' | 'rightArrow' | 'search' | 'user' | 'profile'
   profilePicSrc?: string
   style?: 'white' | 'dark' | 'light'
 }>()
@@ -21,13 +21,14 @@ const iconName = computed(() => {
     case 'leftArrow': return 'arrow-left'
     case 'rightArrow': return 'arrow-right'
     case 'search': return 'search'
+    case 'user' : return 'user'
   }
 
 })
 </script>
 
 <template>
-  <button v-if="['leftArrow', 'rightArrow', 'search'].includes(type)" :class="buttonClass"><font-awesome-icon
+  <button v-if="['leftArrow', 'rightArrow', 'search', 'user'].includes(type)" :class="buttonClass"><font-awesome-icon
       class="bnt-icon" :icon="iconName" /></button>
 </template>
 

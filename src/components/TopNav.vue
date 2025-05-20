@@ -1,7 +1,52 @@
 <script setup lang="ts">
 import user1Profile from '@/assets/img/userProfile/user1.png'
-import { computed } from 'vue';
-import { useRouter , useRoute } from 'vue-router'
+import { computed, nextTick, onUnmounted, watch } from 'vue';
+import { useRouter, useRoute } from 'vue-router'
+import { ref, onMounted } from 'vue'
+import { Slide } from 'vue3-burger-menu'
+import axios from 'axios';
+
+const isLoggedIn = ref(false)
+const isOpen = ref(true)
+
+const closeOnScroll = () => {
+  if (isOpen.value) {
+    isOpen.value = false;
+  }
+};
+
+const user = ref({
+  id: null,
+  first_name: '',
+  last_name: '',
+  email: '',
+  avatar: ''
+});
+
+const fetchUserData = async () => {
+  await axios.get(`https://reqres.in/api/users/2`, {
+    headers: {
+      'x-api-key': 'reqres-free-v1'
+    }
+  }).then((response) => {
+    console.log('Success:', response.data);
+    user.value = response.data.data;
+    console.log(user.value.id)
+  }).catch(error => {
+    console.error('Error:', error);
+  });
+}
+
+onMounted(() => {
+  isLoggedIn.value = !!localStorage.getItem('token')
+  window.addEventListener('scroll', closeOnScroll);
+
+  fetchUserData()
+});
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', closeOnScroll);
+});
 
 const props = defineProps<{
   page: 'home' | 'other' | 'profile'
@@ -24,32 +69,108 @@ const goBack = () => {
   if (props.page !== 'home') {
     router.back()
   }
-  if (route.meta.backTo){
+  if (route.meta.backTo) {
     router.push({ name: 'home' })
   }
 }
 
+const goTo = (pathname: string) => {
+  router.push({ name: pathname })
+}
+
+const logoutHadler = () => {
+  localStorage.removeItem('token')
+  console.log('log out')
+  if (router.currentRoute.value.name === 'home') {
+    router.go(0)
+  } else {
+    router.push({ name: 'home' })
+  }
+}
+
+
+const handleCloseMenu = () => {
+  isOpen.value = false
+}
+const handleOpenMenu = () => {
+  isOpen.value = true
+}
 
 </script>
 
 
 <template>
   <div id="top">
-    <ButtonCircle @click="goBack" :type="page == 'home' ? 'search' : 'leftArrow'" :style="style" />
-    <h :class="styleClass">Impressionism</h>
-    <div v-if="page !== 'profile'" @click="router.push({ name: 'profile', params: { id: 7 } })"
-      :class="[style, 'profile']"> <img :class="[style, 'profile']" :src="user1Profile" /> </div>
-    <div class="btn-gear" v-else><font-awesome-icon :icon="'gear'" class="big-icon" /></div>
-  </div>
+    <div v-if="page === 'home' && isLoggedIn" @click="router.push({ name: 'profile', params: { id: 2 } })"
+      :class="[style, 'profile']"> <img :class="[style, 'profile']" :src="user.avatar" /></div>
+    <ButtonCircle v-else-if="isLoggedIn" @click="goBack" :type="'leftArrow'" :style="style" />
+    <ButtonCircle v-else @click="goTo('login')" :type="'user'" :style="style" />
+    <h @click="goBack" :class="styleClass">Impressionism</h>
+    <div :class="[style, 'hamburger-bar']">
+      <Slide  noOverlay  :isOpen="isOpen"  @openMenu="handleOpenMenu" @closeMenu="handleCloseMenu()" right>
+        <a v-if="isLoggedIn" id="menu-label" @click="router.push({ name: 'profile', params: { id: 2 } })">Profile</a>
+        <a v-if="isLoggedIn" id="menu-label" @click="logoutHadler">Logout</a>
+        <a v-else id="menu-label" @click="goTo('login')">Login</a>
+      </Slide>
+    </div>
 
+  </div>
 </template>
 
 <style scoped>
+:deep(.bm-menu) {
+  /* z-index: 10 !important; */
+  right: -30px;
+  height:  2000px;
+  background-color: var(--secondary);
+}
+
+.light :deep(.bm-burger-bars) {
+  background-color: var(--primary) !important;
+}
+
+:deep(.bm-cross) {
+  background-color: white !important;
+  z-index: 10 !important;
+}
+
+:deep(#menu-label) {
+  color: #fff;
+  padding: 1rem;
+  display: block;
+  text-decoration: none;
+}
+
+:deep(.bm-burger-bars) {
+  background-color: white !important;
+}
+
+:deep(.bm-burger-button) {
+  position: relative !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  margin: 0 auto !important;
+  width: 40px !important;
+  height: 30px !important;
+}
+
+.hamburger-bar {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 #top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   background-color: none;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   padding: 30px 30px 10px 30px;
   align-items: center;
 }
@@ -109,11 +230,11 @@ const goBack = () => {
 }
 
 .btn-gear {
-  display: flex ;
-  justify-content: center ;
-  align-items: center ;
-  width : 50px ;
-  width : 50px ;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  width: 50px;
 }
 
 .big-icon {
@@ -126,15 +247,15 @@ const goBack = () => {
     width: 60px;
     height: 60px;
   }
+
   .btn-gear {
-  width : 60px ;
-  width : 60px ;
-}
-.big-icon {
-  font-size: 60px;
-}
+    width: 60px;
+    width: 60px;
+  }
+
+  .big-icon {
+    font-size: 60px;
+  }
 
 }
-
-
 </style>

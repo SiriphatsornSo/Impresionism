@@ -4,9 +4,6 @@ const props = defineProps<{
   timeline: object
 }>()
 
-console.log(props.timeline.imgScr)
-
-
 </script>
 <template>
   <div class="tl-container">

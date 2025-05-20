@@ -33,15 +33,47 @@ const router = createRouter({
       path: '/painting/:id',
       name: 'painting',
       component: () => import('../view/Painting.vue'),
+      meta : {
+        backTo: "home"}
     },
     {
       path: '/profile/:id',
       name: 'profile',
       component: () => import('../view/Profile.vue'),
       meta : {
-        backTo: "home"}
+        backTo: "home" ,
+        requiresAuth : true
+      },
+    },
+    {
+      path: '/login' ,
+      name: 'login',
+      component: () => import('../view/Login.vue'),
     }
   ],
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition;
+    } else {
+      return { top: 0 };
+    }
+  },
+
+})
+
+router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem('token')
+  console.log('Navigating to:', to.fullPath)
+  console.log('Token exists:', !!token)
+
+  if (to.meta.requiresAuth && !token) {
+    console.log('No token: redirecting to /login')
+    next('/login')
+  } else {
+    console.log('Token found or no auth required: proceeding')
+    console.log('token: ' ,token)
+    next()
+  }
 })
 
 export default router

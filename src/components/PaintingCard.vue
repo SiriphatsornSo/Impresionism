@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { type Painting } from '@/types/painting';
-// import type {Painting} from '@/types/painting'
 
 const props = defineProps<{
   painting: Painting
+  nameColor? : string
 }>()
 
 </script>
 <template>
   <div class="painting-container-card">
-    <img class="painting-img" :src="props.painting.picScr" />
-    <div class="painting-name">{{ props.painting.name }}</div>
+    <img loading="lazy" class="painting-img" :src="props.painting.picScr" />
+    <div :class="['painting-name' , nameColor ]">{{ props.painting.name }}</div>
   </div>
 </template>
 
@@ -30,7 +30,7 @@ const props = defineProps<{
   height: 80%;
   border-radius: 8px;
   object-fit: cover;
-  object-position: 50% 50%;
+  object-position: top ;
 
 }
 
@@ -39,6 +39,16 @@ const props = defineProps<{
   font-size: 10px;
   color: var(--primary);
   text-decoration: none;
+}
+
+.white-name {
+  color : white
+}
+
+@media(min-width : 768px){
+  .painting-name {
+    font-size: 20px;
+  }
 }
 
 </style>
