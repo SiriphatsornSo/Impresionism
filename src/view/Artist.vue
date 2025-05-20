@@ -3,14 +3,38 @@ import { useRoute, useRouter } from 'vue-router'
 import { mockArtists } from '@/data/artists';
 import { mockPaintings } from '@/data/painting';
 import { mockUsers } from '@/data/users';
-import type { Painting } from '@/types/painting';
+// import type { Painting } from '@/types/painting';
 
-const artists = [...mockArtists, ...mockUsers]
+interface Painting {
+  id : number
+  name : string
+  artist : string
+  year : Date
+  picScr : string
+  tecnique? : string
+  location? : string
+  description :string
+}
+
+interface Artist {
+  id: number
+  profileSrc : string
+  name: string
+  birthDate: Date
+  deathDate: Date
+  biography : string
+  rank: 'The Legend'
+  Paintings :Number[]
+}
+
+const mockPainting : Painting[] = mockPaintings
+
+const artists : any = [...mockArtists, ...mockUsers]
 const route = useRoute()
 const artistId = Number(route.params.id)
 
-const artist = artists.find((a) => a.id === artistId)
-const paintings = mockPaintings.filter(p => artist.Paintings.includes(p.id))
+const artist = artists.find((a: { id: number; }) => a.id === artistId) ?? artists[0]
+const paintings : Painting[] = mockPainting.filter(p => artist.Paintings.includes(p.id))
 
 const props = defineProps<{
   frompage : 'hall' | 'painting'

@@ -6,9 +6,9 @@ import { ref } from 'vue';
 
 const mockPainting = mockPaintings
 const artists = [...mockArtists, ...mockUsers]
-const artistsSearch = ref([])
+const artistsSearch : any = ref([])
 const searching = ref(false)
-const paintingSearch = ref([])
+const paintingSearch : any = ref([])
 
 
 const handleSearch = (q: string) => {

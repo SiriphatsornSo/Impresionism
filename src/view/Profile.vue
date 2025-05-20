@@ -7,7 +7,7 @@ import 'animate.css';
 
 const route = useRoute()
 const userId = Number(route.params.id)
-const usertest = mockUsers.find((a) => a.id === 7)
+const usertest : any = mockUsers.find((a) => a.id === 7)
 
 const today = new Date().toISOString().split('T')[0]
 const name = ref('')
@@ -15,16 +15,16 @@ const tel = ref('')
 const email = ref('')
 const birthDate = ref(today)
 const gender = ref('')
-const provinces = ref([])
-const province = ref('')
-const districts = ref([])
-const district = ref('')
-const subdistricts = ref([])
-const subdistrict = ref('')
+const provinces :any = ref([])
+const province :any  = ref('')
+const districts :any = ref([])
+const district :any = ref('')
+const subdistricts:any = ref([])
+const subdistrict:any = ref('')
 const zipCode = ref(null)
 const openModal = ref(false)
 const formRef = ref<HTMLFormElement | null>(null)
-const user = ref({
+const userAPI = ref({
   id: null,
   first_name: '',
   last_name: '',
@@ -46,6 +46,20 @@ const editProfileDetail = {
   newZipCode: zipCode
 }
 
+interface LINEProfile {
+  userId: string
+  displayName: string
+  pictureUrl: string
+  statusMessage?: string
+}
+
+const user = ref<LINEProfile | null>(null)
+
+const storedUser = localStorage.getItem('user')
+if (storedUser) {
+  user.value = JSON.parse(storedUser) as LINEProfile
+}
+
 
 const data = ref([])
 const fetchdata = async () => {
@@ -62,8 +76,8 @@ const fetchUserData = async () => {
     }
   }).then((response) => {
     console.log('Success:', response.data);
-    user.value = response.data.data;
-    console.log(user.value.id)
+    userAPI.value = response.data.data;
+    console.log(userAPI.value.id)
   }).catch(error => {
     console.error('Error:', error);
   });
@@ -72,7 +86,7 @@ const fetchUserData = async () => {
 const putUserData = async () => {
   await axios.put(`https://reqres.in/api/users/${userId}`, {
     "name": nametest.value,
-    // "job": jobtest.value
+    "job": jobtest.value
   }, {
     headers: {
       'x-api-key': 'reqres-free-v1'
@@ -155,25 +169,34 @@ const formatPhone = (event: Event) => {
 </script>
 <template>
   <div class="container">
-    <div class="profile-relative">
-      <img :src="user.avatar" />
+    <div  class="profile-relative">
+      <img v-if="user" :src="user.pictureUrl" />
+      <img v-else  :src="userAPI.avatar" />
+
       <TopNav class="topnav" :page="'profile'" :style="'white'" />
     </div>
     <div class="profile-container">
-      <div class="profile-detail-container">
-        <div id="userName">{{ user.first_name }} {{ user.last_name }}</div>
-        <div id="userRank">{{ usertest.rank }}</div>
-        <div id="userBio">{{ user.email }}</div>
+      <div v-if="user" class="profile-detail-container">
+        <div id="userName">{{ user.displayName }} </div>
+        <div id="userRank">{{ user.statusMessage }}</div>
+        <div id="userBio">{{ userAPI.email }}</div>
       </div>
 
-      <div class="test update">
+      <div v-else class="profile-detail-container">
+        <div id="userName">{{ userAPI.first_name }} </div>
+        <div id="userRank">{{ userAPI.last_name }}</div>
+        <div id="userBio">{{ userAPI.email }}</div>
+      </div>
+
+      <div class="test-update">
+         <div id="edit-profile-text">Test Update Data</div>
         <label>Name</label>
         <input v-model="nametest" />
         <label>Job</label>
         <input v-model="jobtest" />
-        <ButtonDefault style="width: 80%; height: auto; padding: 20px; margin: 5px ;" @click="putUserData"
+        <ButtonDefault style=" height: auto; padding: 20px; margin: 5px ;" @click="putUserData"
           :title="'Put UserData'" />
-        <ButtonDefault style="width: 80%; height: auto; padding: 20px ; margin: 5px;" @click="patchUserData"
+        <ButtonDefault style=" height: auto; padding: 20px ; margin: 5px;" @click="patchUserData"
           :title="'Patch UserData'" />
       </div>
 
@@ -229,6 +252,30 @@ const formatPhone = (event: Event) => {
 
 </template>
 <style scope>
+.test-update {
+  display: flex;
+  flex-direction: column;
+  justify-content: center ;
+  width: 100%;
+  padding : 30px ;
+}
+.test-update>label {
+  font-size: 14px;
+  font-weight: lighter;
+  color: var(--p6);
+  margin-bottom: 4px;
+  padding-left: 4px;
+}
+
+.test-update>input {
+  height: 40px;
+  border: 2px solid var(--p6);
+  border-radius: 12px;
+  margin-bottom: 16px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
 .container {
   position : relative ;
 }
@@ -237,8 +284,6 @@ const formatPhone = (event: Event) => {
   height: 450px;
   overflow: hidden;
   border-radius: 0px;
-  /* position: relative; */
-  /* z-index: 1; */
   margin-bottom: 0px;
 }
 
@@ -267,7 +312,7 @@ const formatPhone = (event: Event) => {
   z-index: 3;
   border-top-left-radius: 30px;
   border-top-right-radius: 30px;
-  height: 500px;
+  height: auto ;
   max-width: 900px;
   margin-top: -50px;
   position : absolute ;
@@ -279,7 +324,7 @@ const formatPhone = (event: Event) => {
   flex-direction: column;
   justify-content: center;
   align-content: center;
-  height: 300px;
+  height: auto ;
 }
 
 .profile-detail-container>div {

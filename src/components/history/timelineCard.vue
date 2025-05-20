@@ -1,7 +1,15 @@
 <script setup lang="ts">
 
+interface mockTimelineData {
+  imgScr: string
+  imgDescription: string
+  content:  string
+  start : number
+  end : number
+}
+
 const props = defineProps<{
-  timeline: object
+  timeline: mockTimelineData
 }>()
 
 </script>

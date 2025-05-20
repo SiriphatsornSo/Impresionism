@@ -2,9 +2,21 @@
 
 import { defineProps } from 'vue';
 const props = defineProps<{
-  editDetail: object
+  editDetail: editProfileDetail
   openModal: boolean
 }>()
+
+interface editProfileDetail  {
+  newName: string ,
+  newTel: string ,
+  newEmail: string ,
+  newBirthDate: string,
+  newGender: string,
+  newProvince: string,
+  newDistirct: string,
+  newSubdistirct: string,
+  newZipCode: string
+}
 
 const emit = defineEmits(['confirm', 'cancel'])
 
@@ -28,8 +40,8 @@ function handleConfirm() {
     birthDate : {{ editDetail.newBirthDate }}
     gender : {{ editDetail.newGender }}
     province : {{ editDetail.newProvince }}
-    district : {{ editDetail.newDistrict }}
-    subdistrict : {{ editDetail.newSubdistrict }}
+    district : {{ editDetail.newDistirct }}
+    subdistrict : {{ editDetail.newSubdistirct }}
     zip code : {{ editDetail.newZipCode }} </pre>
       <div class="btn-container">
         <ButtonDefault @click="handleConfirm" style="width: 100%;" :title="'confirm'" />

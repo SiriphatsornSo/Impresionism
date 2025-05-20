@@ -1,10 +1,24 @@
 <script setup lang="ts">
-import user1Profile from '@/assets/img/userProfile/user1.png'
-import { computed, nextTick, onUnmounted, watch } from 'vue';
+import { computed, onUnmounted} from 'vue';
 import { useRouter, useRoute } from 'vue-router'
 import { ref, onMounted } from 'vue'
 import { Slide } from 'vue3-burger-menu'
 import axios from 'axios';
+import liff from '@line/liff';
+
+interface LINEProfile {
+  userId: string
+  displayName: string
+  pictureUrl: string
+  statusMessage?: string
+}
+
+const user = ref<LINEProfile | null>(null)
+
+const storedUser = localStorage.getItem('user')
+if (storedUser) {
+  user.value = JSON.parse(storedUser) as LINEProfile
+}
 
 const isLoggedIn = ref(false)
 const isOpen = ref(true)
@@ -15,7 +29,7 @@ const closeOnScroll = () => {
   }
 };
 
-const user = ref({
+const usertest = ref({
   id: null,
   first_name: '',
   last_name: '',
@@ -30,8 +44,8 @@ const fetchUserData = async () => {
     }
   }).then((response) => {
     console.log('Success:', response.data);
-    user.value = response.data.data;
-    console.log(user.value.id)
+    usertest.value = response.data.data;
+    console.log(usertest.value.id)
   }).catch(error => {
     console.error('Error:', error);
   });
@@ -40,7 +54,6 @@ const fetchUserData = async () => {
 onMounted(() => {
   isLoggedIn.value = !!localStorage.getItem('token')
   window.addEventListener('scroll', closeOnScroll);
-
   fetchUserData()
 });
 
@@ -49,7 +62,7 @@ onUnmounted(() => {
 });
 
 const props = defineProps<{
-  page: 'home' | 'other' | 'profile'
+  page?: 'home' | 'other' | 'profile'
   style?: 'white' | 'dark' | 'light'
 }>()
 
@@ -78,8 +91,15 @@ const goTo = (pathname: string) => {
   router.push({ name: pathname })
 }
 
-const logoutHadler = () => {
+const Liff_ID = "2007442760-5R3r74De";
+const logoutHadler = async () => {
+  await liff.init({ liffId: Liff_ID });
   localStorage.removeItem('token')
+  localStorage.removeItem('user')
+  if (liff.isLoggedIn()){
+    liff.logout()
+     console.log('liff log out')
+  }
   console.log('log out')
   if (router.currentRoute.value.name === 'home') {
     router.go(0)
@@ -102,7 +122,7 @@ const handleOpenMenu = () => {
 <template>
   <div id="top">
     <div v-if="page === 'home' && isLoggedIn" @click="router.push({ name: 'profile', params: { id: 2 } })"
-      :class="[style, 'profile']"> <img :class="[style, 'profile']" :src="user.avatar" /></div>
+      :class="[style, 'profile']"> <img v-if="user" :class="[style, 'profile']" :src="user.pictureUrl" /><img v-else :class="[style, 'profile']" :src="usertest.avatar" /></div>
     <ButtonCircle v-else-if="isLoggedIn" @click="goBack" :type="'leftArrow'" :style="style" />
     <ButtonCircle v-else @click="goTo('login')" :type="'user'" :style="style" />
     <h @click="goBack" :class="styleClass">Impressionism</h>

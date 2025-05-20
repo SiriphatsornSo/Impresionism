@@ -1,5 +1,15 @@
 <script setup lang="ts">
-import { type Painting } from '@/types/painting';
+// import { type Painting } from '@/types/painting';
+interface Painting {
+  id : number
+  name : string
+  artist : string
+  year : Date
+  picScr : string
+  tecnique? : string
+  location? : string
+  description :string
+}
 
 const props = defineProps<{
   painting: Painting

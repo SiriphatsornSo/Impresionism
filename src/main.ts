@@ -4,6 +4,8 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 
+import { createPinia } from 'pinia'
+
 //component
 import ButtonCircle from '@/components/buttons/ButtonCircle.vue'
 import ButtonDefault from '@/components/buttons/ButtonDefault.vue'
@@ -16,14 +18,16 @@ import PaintingCard from '@/components/PaintingCard.vue'
 import TimelineCard from './components/history/timelineCard.vue'
 import EditProfileModal from '@/components/modals/editProfileModal.vue'
 import TinyArtistCard from './components/home/TinyArtistCard.vue'
-import SwiperPainting from './components/home/swiperPainting.vue'
+import SwiperPainting from './components/home/SwiperPainting.vue'
 
 // FontAwesome Setup
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faHouse, faList , faStar , faImage , faSearch ,faGear , faArrowLeft ,faArrowRight,faPlus, faUser } from '@fortawesome/free-solid-svg-icons'
-library.add(faHouse, faList , faStar , faImage , faSearch ,faGear , faArrowLeft ,faArrowRight ,faPlus,faUser)
+import { faLine } from '@fortawesome/free-brands-svg-icons'
+library.add(faHouse, faList , faStar , faImage , faSearch ,faGear , faArrowLeft ,faArrowRight ,faPlus,faUser,faLine)
 
+const pinia = createPinia()
 const app = createApp(App)
 
 //cooponent
@@ -41,5 +45,6 @@ app.component('EditProfileModal',EditProfileModal)
 app.component('TinyArtistCard',TinyArtistCard)
 app.component('SwiperPainting',SwiperPainting)
 
+app.use(pinia)
 app.use(router)
 app.mount('#app')

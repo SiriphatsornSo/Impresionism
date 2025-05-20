@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
 import { mockArtists } from '@/data/artists';
+import { inject } from 'vue'
+const user = inject('user')
 
 const mockTimelineData = {
   imgScr: 'https://placehold.co/600x400',
