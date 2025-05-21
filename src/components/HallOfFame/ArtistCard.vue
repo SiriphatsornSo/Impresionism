@@ -23,7 +23,7 @@ console.log(props)
 
     <div class="cardabsolute">
       <h id="name"> {{ artist.name }}</h>
-      <h2 id="year">{{ artist.birthDate.getFullYear() }} - {{ artist.yearDeath }}</h2>
+      <h2 id="year">{{ artist.birthDate.getFullYear() }} </h2>
       <h3 id="rank">{{ artist.rank }}</h3>
     </div>
   </div>

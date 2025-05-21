@@ -15,8 +15,6 @@ provide('user', user)
 
 const initLiff = async () => {
   try {
-    await liff.init({ liffId: Liff_ID });
-
     if (!liff.isLoggedIn()) {
       await liff.login();
       return;

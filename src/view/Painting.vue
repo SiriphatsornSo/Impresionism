@@ -46,7 +46,7 @@ const goToArtistPage = () => {
 <style scope>
 .painting-relative {
   width: auto;
-  height: auto;
+  height: 100vh ;
   overflow: hidden;
   border-radius: 0px;
   position: relative;

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import userTestPinia from '@/assets/img/painting/paintingA13.jpg'
 import { RouterView } from 'vue-router'
-import { onMounted, ref, watch } from "vue";
+import { nextTick, onMounted, ref, watch } from "vue";
 import liff from "@line/liff";
 const user: any = ref(null);
 const Liff_ID = "2007442760-5R3r74De";
@@ -25,11 +25,35 @@ const testUserPinia: any = {
 
 const store = useUserStore()
 
+// const initLiff = async () => {
+//   try {
+//     await liff.init({ liffId: Liff_ID });
+//     if (!liff.isLoggedIn()) {
+//       await liff.login();
+//       return;
+//     }
+//     const profile = await liff.getProfile();
+//     console.log("User Profile:", profile);
+//     user.value = profile;
+//     store.setUser(profile)
+//     const tokenLine = liff.getAccessToken();
+//     if (tokenLine) {
+//       localStorage.setItem("token", tokenLine);
+//     } else {
+//       console.warn("Access token is null");
+//     }
+
+//     await nextTick();
+//     console.log('home')
+//     router.push({ name: "home" });
+
+//   } catch (err) {
+//     console.error("LIFF init error:", err);
+//   }
 
 const initLiff = async () => {
   try {
     await liff.init({ liffId: Liff_ID });
-
     if (!liff.isLoggedIn()) {
       router.push({ name: 'login' })
     } else {
@@ -38,6 +62,7 @@ const initLiff = async () => {
       store.setUser(profile)
       const tokenLine = liff.getAccessToken()
       console.log('Token:', tokenLine)
+      await nextTick()
       if (tokenLine) {
         localStorage.setItem('token', tokenLine);
       } else {

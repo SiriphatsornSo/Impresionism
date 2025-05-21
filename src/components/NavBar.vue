@@ -56,7 +56,7 @@ import { RouterLink, RouterView } from 'vue-router'
   overflow: hidden;
   width: 90%;
   max-height: 60px;
-  z-index: 4;
+  z-index: 5;
 }
 
 .Nav-item {

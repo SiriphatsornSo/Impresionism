@@ -54,6 +54,7 @@ const gotoHall = () => {
   transform: translateY(-50%);;
   z-index: 4 ;
   font-size: 50px ;
+  padding-bottom: 16px;
 }
 .rank-label {
   color: var(--accent);

@@ -38,7 +38,7 @@ import bgHead from '@/assets/img/painting/paintingA11.jpg'
   width: 100%;
   position: absolute !important;
   top: 0px;
-  z-index: 5;
+  z-index: 12;
   max-width: 900px;
 }
 

@@ -49,6 +49,11 @@ const router = createRouter({
       path: '/login' ,
       name: 'login',
       component: () => import('../view/Login.vue'),
+    },
+    {
+      path: '/editProfile/:id' ,
+      name: 'editProfile',
+      component: () => import('../view/EditProfile.vue'),
     }
   ],
   scrollBehavior(to, from, savedPosition) {

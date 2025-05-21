@@ -18,7 +18,10 @@ const gotoPaintingPage = (paintingid: number) => {
 
 </script>
 <template>
-  <Swiper :modules="[Navigation, Pagination]" :loop="true" navigation pagination class="my-swiper">
+  <Swiper
+  :modules="[Navigation, Pagination]"
+  :loop="true" navigation pagination class="my-swiper"
+  data-swiper-autoplay="2000" >
     <SwiperSlide  v-for="painting in mockPaintings">
       <div  class="slide-painting">
         <img @click="gotoPaintingPage(painting.id)" :src="painting.picScr" />
@@ -74,7 +77,7 @@ const gotoPaintingPage = (paintingid: number) => {
 
 .swiper-button-next,
 .swiper-button-prev {
-  color: var(--primary);
+  color: var(--accent);
   font-size: 10px;
 }
 

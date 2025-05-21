@@ -164,6 +164,7 @@ const props = defineProps<{
   width: 50%;
   display: inline-block;
   text-align: center;
+  text-decoration: none;
 }
 
 @media (min-width : 768px) {

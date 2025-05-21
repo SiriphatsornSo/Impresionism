@@ -5,7 +5,6 @@ import { ref, onMounted } from 'vue'
 import { Slide } from 'vue3-burger-menu'
 import axios from 'axios';
 import liff from '@line/liff';
-
 import { useUserStore } from '@/stores/user'
 
 interface LINEProfile {
@@ -130,7 +129,7 @@ const handleOpenMenu = () => {
     <div :class="[style, 'hamburger-bar']">
       <Slide noOverlay :isOpen="isOpen" @openMenu="handleOpenMenu" @closeMenu="handleCloseMenu()" right>
         <a v-if="isLoggedIn && page !== 'profile'" id="menu-label" @click="router.push({ name: 'profile', params: { id: 2 } })">Profile</a>
-        <a v-if="isLoggedIn && page === 'profile'" id="menu-label" @click="router.push({ name: 'Edit'})">Edit Profile</a>
+        <a v-if="isLoggedIn && page === 'profile'" id="menu-label" @click="router.push({ name: 'editProfile', params: { id: 2 }})">Edit Profile</a>
         <!-- <a v-if="isLoggedIn && page === 'profile'" id="menu-label" @click="router.push({ name: 'profile', params: { id: 2 } })">Test UpdateAPI</a> -->
         <a v-if="isLoggedIn" id="menu-label" @click="logoutHadler">Logout</a>
         <a v-else id="menu-label" @click="goTo('login')">Login</a>
