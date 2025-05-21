@@ -35,7 +35,7 @@ import { RouterLink, RouterView } from 'vue-router'
   }
 
   .Nav-container {
-    max-width: 900px;
+    max-width: 840px;
   }
 }
 

@@ -1,24 +1,21 @@
 <script setup lang="ts">
-import { computed, onUnmounted} from 'vue';
+import { computed, onUnmounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router'
 import { ref, onMounted } from 'vue'
 import { Slide } from 'vue3-burger-menu'
 import axios from 'axios';
 import liff from '@line/liff';
 
+import { useUserStore } from '@/stores/user'
+
 interface LINEProfile {
   userId: string
   displayName: string
-  pictureUrl: string
+  pictureUrl?: string
   statusMessage?: string
 }
 
 const user = ref<LINEProfile | null>(null)
-
-const storedUser = localStorage.getItem('user')
-if (storedUser) {
-  user.value = JSON.parse(storedUser) as LINEProfile
-}
 
 const isLoggedIn = ref(false)
 const isOpen = ref(true)
@@ -52,6 +49,8 @@ const fetchUserData = async () => {
 }
 
 onMounted(() => {
+  const storedUser = useUserStore()
+  user.value = storedUser.user
   isLoggedIn.value = !!localStorage.getItem('token')
   window.addEventListener('scroll', closeOnScroll);
   fetchUserData()
@@ -96,9 +95,9 @@ const logoutHadler = async () => {
   await liff.init({ liffId: Liff_ID });
   localStorage.removeItem('token')
   localStorage.removeItem('user')
-  if (liff.isLoggedIn()){
+  if (liff.isLoggedIn()) {
     liff.logout()
-     console.log('liff log out')
+    console.log('liff log out')
   }
   console.log('log out')
   if (router.currentRoute.value.name === 'home') {
@@ -122,13 +121,17 @@ const handleOpenMenu = () => {
 <template>
   <div id="top">
     <div v-if="page === 'home' && isLoggedIn" @click="router.push({ name: 'profile', params: { id: 2 } })"
-      :class="[style, 'profile']"> <img v-if="user" :class="[style, 'profile']" :src="user.pictureUrl" /><img v-else :class="[style, 'profile']" :src="usertest.avatar" /></div>
-    <ButtonCircle v-else-if="isLoggedIn" @click="goBack" :type="'leftArrow'" :style="style" />
-    <ButtonCircle v-else @click="goTo('login')" :type="'user'" :style="style" />
+      :class="[style, 'profile']"><img :class="[style, 'profile']" :src="user?.pictureUrl || usertest.avatar" />
+    </div>
+    <ButtonCircle v-else-if="page === 'home'" @click="goTo('login')" :type="'user'" :style="style" />
+    <ButtonCircle v-else="page !== 'home'" @click="goBack" :type="'leftArrow'" :style="style" />
+
     <h @click="goBack" :class="styleClass">Impressionism</h>
     <div :class="[style, 'hamburger-bar']">
-      <Slide  noOverlay  :isOpen="isOpen"  @openMenu="handleOpenMenu" @closeMenu="handleCloseMenu()" right>
-        <a v-if="isLoggedIn" id="menu-label" @click="router.push({ name: 'profile', params: { id: 2 } })">Profile</a>
+      <Slide noOverlay :isOpen="isOpen" @openMenu="handleOpenMenu" @closeMenu="handleCloseMenu()" right>
+        <a v-if="isLoggedIn && page !== 'profile'" id="menu-label" @click="router.push({ name: 'profile', params: { id: 2 } })">Profile</a>
+        <a v-if="isLoggedIn && page === 'profile'" id="menu-label" @click="router.push({ name: 'Edit'})">Edit Profile</a>
+        <!-- <a v-if="isLoggedIn && page === 'profile'" id="menu-label" @click="router.push({ name: 'profile', params: { id: 2 } })">Test UpdateAPI</a> -->
         <a v-if="isLoggedIn" id="menu-label" @click="logoutHadler">Logout</a>
         <a v-else id="menu-label" @click="goTo('login')">Login</a>
       </Slide>
@@ -139,9 +142,8 @@ const handleOpenMenu = () => {
 
 <style scoped>
 :deep(.bm-menu) {
-  /* z-index: 10 !important; */
   right: -30px;
-  height:  2000px;
+  height: 2000px;
   background-color: var(--secondary);
 }
 
@@ -277,5 +279,11 @@ const handleOpenMenu = () => {
     font-size: 60px;
   }
 
+}
+
+@media (min-width:900px) {
+  :deep(.bm-menu) {
+    margin-right: calc((100vw - 915px)/2);
+  }
 }
 </style>

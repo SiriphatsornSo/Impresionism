@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import axios from 'axios';
-import { onMounted, ref } from 'vue';
+import { nextTick, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 const formRef = ref<HTMLFormElement | null>(null)
 const email = ref('')
@@ -18,21 +18,25 @@ const initLiff = async () => {
     await liff.init({ liffId: Liff_ID });
 
     if (!liff.isLoggedIn()) {
-      liff.login();
-    } else {
-      const profile = await liff.getProfile();
-      console.log("User Profile:", profile);
-      user.value = profile;
-      localStorage.setItem('user', JSON.stringify(profile));
-      const tokenLine = liff.getAccessToken()
-      console.log('Token:', tokenLine)
-      if (tokenLine) {
-        localStorage.setItem('token', tokenLine);
-      } else {
-        console.warn('Access token is null');
-      }
-      router.push({name : 'home'})
+      await liff.login();
+      return;
     }
+
+    const profile = await liff.getProfile();
+    console.log("User Profile:", profile);
+    user.value = profile;
+
+    const tokenLine = liff.getAccessToken();
+    if (tokenLine) {
+      localStorage.setItem("token", tokenLine);
+    } else {
+      console.warn("Access token is null");
+    }
+
+    await nextTick();
+    console.log('home')
+    router.push({ name: "home" });
+
   } catch (err) {
     console.error("LIFF init error:", err);
   }

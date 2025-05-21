@@ -4,6 +4,7 @@ import axios from 'axios';
 import { onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import 'animate.css';
+import { useUserStore } from '@/stores/user'
 
 const route = useRoute()
 const userId = Number(route.params.id)
@@ -22,8 +23,10 @@ const district :any = ref('')
 const subdistricts:any = ref([])
 const subdistrict:any = ref('')
 const zipCode = ref(null)
-const openModal = ref(false)
+const openModalEdit = ref(false)
+const openModalResult = ref(false)
 const formRef = ref<HTMLFormElement | null>(null)
+const responseStatus = ref()
 const userAPI = ref({
   id: null,
   first_name: '',
@@ -49,16 +52,13 @@ const editProfileDetail = {
 interface LINEProfile {
   userId: string
   displayName: string
-  pictureUrl: string
+  pictureUrl?: string
   statusMessage?: string
 }
 
 const user = ref<LINEProfile | null>(null)
-
-const storedUser = localStorage.getItem('user')
-if (storedUser) {
-  user.value = JSON.parse(storedUser) as LINEProfile
-}
+const storedUser = useUserStore()
+user.value = storedUser.user
 
 
 const data = ref([])
@@ -93,6 +93,8 @@ const putUserData = async () => {
     }
   }).then(response => {
     console.log('Success Put:', response.data);
+    responseStatus.value = 400
+    openModalResult.value = true
   }).catch(error => {
     console.error('Error:', error);
   });
@@ -107,7 +109,9 @@ const patchUserData = async () => {
       'x-api-key': 'reqres-free-v1'
     }
   }).then(response => {
-    console.log('Success Patch:', response.data);
+    console.log('Success Patch:', response.status);
+    responseStatus.value = response.status
+    openModalResult.value = true
   }).catch(error => {
     console.error('Error:', error);
   });
@@ -123,29 +127,29 @@ watch(province, async (newProvince, oldProvince) => {
     districts.value = newProvince?.amphure
     subdistricts.value = district?.tambon
     zipCode.value = null
+    editProfileDetail.newProvince = newProvince.name_th
   }
 })
 
 watch(district, async (district) => {
   subdistricts.value = district.tambon
   zipCode.value = null
+  editProfileDetail.newDistirct = district.name_th
 })
 
 watch(subdistrict, async (subdistrict) => {
+  editProfileDetail.newSubdistirct = subdistrict.name_th
   zipCode.value = subdistrict.zip_code
 })
 
-const editProfile = () => {
-  openModal.value = true
-}
 const confirmHandler = () => {
-  openModal.value = false
+  openModalEdit.value = false
   console.log('confirm')
 }
 
 const submitForm = () => {
   if (formRef.value?.checkValidity()) {
-    openModal.value = true
+    openModalEdit.value = true
   } else {
     formRef.value?.reportValidity()
   }
@@ -245,8 +249,11 @@ const formatPhone = (event: Event) => {
         </form>
       </div>
     </div>
-    <div v-if="openModal === true">
-      <EditProfileModal @cancel="openModal = !openModal" @confirm="confirmHandler" :editDetail="editProfileDetail" />
+    <div v-if="openModalEdit === true">
+      <EditProfileModal @cancel="openModalEdit = !openModalEdit" @confirm="confirmHandler" :editDetail="editProfileDetail" />
+    </div>
+    <div v-if="openModalResult === true">
+      <UpdatePutPatch @close="openModalResult = !openModalResult" :responseStatus="responseStatus" />
     </div>
   </div>
 
@@ -431,6 +438,10 @@ const formatPhone = (event: Event) => {
   }
 
   .edit-profile {
+    width: 70%;
+  }
+
+  .test-update {
     width: 70%;
   }
 }

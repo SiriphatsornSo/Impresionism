@@ -28,6 +28,8 @@ function handleConfirm() {
   emit('confirm');
 }
 
+console.log(props.editDetail)
+
 </script>
 
 <template>
@@ -92,4 +94,5 @@ function handleConfirm() {
   flex-direction: row;
   justify-content: space-evenly;
 }
+
 </style>
