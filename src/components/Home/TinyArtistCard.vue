@@ -21,7 +21,7 @@ const gotoHall = () => {
 
 </script>
 <template>
-  <h class="rank-label">{{ rank }}</h>
+  <h1 class="rank-label">{{ rank }}</h1>
   <div class="tiny-artist-container">
     <div v-for="artist in artists.slice(0, 3)" class="tiny-card">
       <img @click="gotoArtistPage(artist.id)" :src="artist.profileSrc">
@@ -58,6 +58,7 @@ const gotoHall = () => {
 }
 .rank-label {
   color: var(--accent);
+  font-size: 12px;
 }
 
 .tiny-artist-container {

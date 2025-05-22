@@ -19,22 +19,6 @@ const initLiff = async () => {
       await liff.login();
       return;
     }
-
-    const profile = await liff.getProfile();
-    console.log("User Profile:", profile);
-    user.value = profile;
-
-    const tokenLine = liff.getAccessToken();
-    if (tokenLine) {
-      localStorage.setItem("token", tokenLine);
-    } else {
-      console.warn("Access token is null");
-    }
-
-    await nextTick();
-    console.log('home')
-    router.push({ name: "home" });
-
   } catch (err) {
     console.error("LIFF init error:", err);
   }
@@ -69,7 +53,7 @@ const submitForm = async () => {
 </script>
 <template>
   <div class="top-container">
-    <h id="login-head">Login</h>
+    <h1 id="login-head">Login</h1>
     <form class="login-form-container" @submit.prevent="submitForm" ref="formRef">
       <label>Email</label>
       <input type="email" id="email" size="30" v-model="email" required />

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const props = defineProps<{
   title: string
-  typeButton: "button" | "submit" | "reset" | undefined
+  typeButton?: "button" | "submit" | "reset" | undefined
 }>()
 </script>
 <template>

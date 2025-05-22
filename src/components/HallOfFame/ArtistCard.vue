@@ -22,7 +22,7 @@ console.log(props)
     <div class="overlay"></div>
 
     <div class="cardabsolute">
-      <h id="name"> {{ artist.name }}</h>
+      <h1 id="name"> {{ artist.name }}</h1>
       <h2 id="year">{{ artist.birthDate.getFullYear() }} </h2>
       <h3 id="rank">{{ artist.rank }}</h3>
     </div>

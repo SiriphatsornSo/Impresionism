@@ -3,7 +3,6 @@ import { useRoute, useRouter } from 'vue-router'
 import { mockArtists } from '@/data/artists';
 import { mockPaintings } from '@/data/painting';
 import { mockUsers } from '@/data/users';
-// import type { Painting } from '@/types/painting';
 
 interface Painting {
   id : number
@@ -37,7 +36,7 @@ const artist = artists.find((a: { id: number; }) => a.id === artistId) ?? artist
 const paintings : Painting[] = mockPainting.filter(p => artist.Paintings.includes(p.id))
 
 const props = defineProps<{
-  frompage : 'hall' | 'painting'
+  frompage? : 'hall' | 'painting'
   paintingId? : number
 }>()
 

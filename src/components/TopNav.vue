@@ -6,7 +6,9 @@ import { Slide } from 'vue3-burger-menu'
 import axios from 'axios';
 import liff from '@line/liff';
 import { useUserStore } from '@/stores/user'
-
+import { storeToRefs } from 'pinia';
+  const storedUser = useUserStore()
+  const { user } = storeToRefs(storedUser);
 interface LINEProfile {
   userId: string
   displayName: string
@@ -14,7 +16,9 @@ interface LINEProfile {
   statusMessage?: string
 }
 
-const user = ref<LINEProfile | null>(null)
+console.log('store'+ user.value)
+
+// const user = ref<LINEProfile | null>(null)
 
 const isLoggedIn = ref(false)
 const isOpen = ref(true)
@@ -47,9 +51,8 @@ const fetchUserData = async () => {
   });
 }
 
-onMounted(() => {
-  const storedUser = useUserStore()
-  user.value = storedUser.user
+onMounted(async () => {
+  console.log('f navtop' + storedUser.user)
   isLoggedIn.value = !!localStorage.getItem('token')
   window.addEventListener('scroll', closeOnScroll);
   fetchUserData()
@@ -119,19 +122,18 @@ const handleOpenMenu = () => {
 
 <template>
   <div id="top">
-    <div v-if="page === 'home' && isLoggedIn" @click="router.push({ name: 'profile', params: { id: 2 } })"
+    <div v-if="page === 'home' && ( user || isLoggedIn)" @click="router.push({ name: 'profile', params: { id: 2 } })"
       :class="[style, 'profile']"><img :class="[style, 'profile']" :src="user?.pictureUrl || usertest.avatar" />
     </div>
     <ButtonCircle v-else-if="page === 'home'" @click="goTo('login')" :type="'user'" :style="style" />
     <ButtonCircle v-else="page !== 'home'" @click="goBack" :type="'leftArrow'" :style="style" />
 
-    <h @click="goBack" :class="styleClass">Impressionism</h>
+    <h1 @click="goBack" :class="styleClass">Impressionism</h1>
     <div :class="[style, 'hamburger-bar']">
       <Slide noOverlay :isOpen="isOpen" @openMenu="handleOpenMenu" @closeMenu="handleCloseMenu()" right>
-        <a v-if="isLoggedIn && page !== 'profile'" id="menu-label" @click="router.push({ name: 'profile', params: { id: 2 } })">Profile</a>
-        <a v-if="isLoggedIn && page === 'profile'" id="menu-label" @click="router.push({ name: 'editProfile', params: { id: 2 }})">Edit Profile</a>
-        <!-- <a v-if="isLoggedIn && page === 'profile'" id="menu-label" @click="router.push({ name: 'profile', params: { id: 2 } })">Test UpdateAPI</a> -->
-        <a v-if="isLoggedIn" id="menu-label" @click="logoutHadler">Logout</a>
+        <a v-if="( user || isLoggedIn) && page !== 'profile'" id="menu-label" @click="router.push({ name: 'profile', params: { id: 2 } })">Profile</a>
+        <a v-if="( user || isLoggedIn) && page === 'profile'" id="menu-label" @click="router.push({ name: 'editProfile', params: { id: 2 }})">Edit Profile</a>
+        <a v-if="( user || isLoggedIn)" id="menu-label" @click="logoutHadler">Logout</a>
         <a v-else id="menu-label" @click="goTo('login')">Login</a>
       </Slide>
     </div>

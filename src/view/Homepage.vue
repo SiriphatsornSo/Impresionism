@@ -15,6 +15,8 @@ interface mockArtistData {
   name: string,
 }
 
+
+
 const mockArtistsData: mockArtistData[] = [
   {
     id: 1,
@@ -49,7 +51,7 @@ const toHistoryPage = () => {
   <NavBar />
 
   <div class="history-section">
-    <h class="tl-head">Timeline 0f History</h>
+    <h1 class="tl-head">Timeline 0f History</h1>
     <div>
       <timelineCard v-for="i in 2" :timeline="mockTimelineData" />
     </div>
@@ -57,7 +59,7 @@ const toHistoryPage = () => {
   </div>
 
   <div class="tiny-hall">
-    <h1 class="hall-of-fame">Hall of Fame</h1>
+    <div class="hall-of-fame">Hall of Fame</div>
     <div class="hall-bio">“Discover Your Ideal Artist in the Hall of Fame”</div>
     <TinyArtistCard :artists="mockArtists.slice(0, 4)" :rank="'The Legend'" />
     <TinyArtistCard :artists="mockArtistsData" :rank="'Adept Creator'" />

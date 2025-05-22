@@ -12,7 +12,7 @@ const mockTimelineData = {
 <template>
     <NavBar/>
   <TopNav :style="'light'" />
-  <h class="tl-head">Timeline 0f History</h>
+  <h1 class="tl-head">Timeline 0f History</h1>
   <timelineCard v-for=" i in 10 " :timeline="mockTimelineData" />
 </template>
 
