@@ -135,6 +135,7 @@ const handleOpenMenu = () => {
         <a v-if="( user || isLoggedIn) && page === 'profile'" id="menu-label" @click="router.push({ name: 'editProfile', params: { id: 2 }})">Edit Profile</a>
         <a v-if="( user || isLoggedIn)" id="menu-label" @click="logoutHadler">Logout</a>
         <a v-else id="menu-label" @click="goTo('login')">Login</a>
+        <a id="menu-label" @click="router.push('/this-path-does-not-exist')">Test 404 Page</a>
       </Slide>
     </div>
 

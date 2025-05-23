@@ -54,6 +54,10 @@ const router = createRouter({
       path: '/editProfile/:id' ,
       name: 'editProfile',
       component: () => import('../view/EditProfile.vue'),
+    },{
+      path: '/:pathMatch(.*)*' ,
+      name: 'not found',
+      component: () => import('../view/NotFound404.vue'),
     }
   ],
   scrollBehavior(to, from, savedPosition) {
